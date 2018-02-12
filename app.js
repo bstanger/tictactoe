@@ -1,54 +1,62 @@
 (function(){
 
   var squaresPlayed = 0;
+  var currentPlayToken = 'X';
+  var boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
 
-  var checkForWin = function(isPlayerO){
-    var row1 = document.querySelectorAll('.board__row1 button');
-    var row2 = document.querySelectorAll('.board__row2 button');
-    var row3 = document.querySelectorAll('.board__row3 button');
-    var col1 = document.querySelectorAll('.board__sq[data-col="1"]');
-    var col2 = document.querySelectorAll('.board__sq[data-col="2"]');
-    var col3 = document.querySelectorAll('.board__sq[data-col="3"]');
-    var rowsAndCols = [row1, row2, row3, col1, col2, col3];
-    var currentPlayerType = isPlayerO ? "O" :"X";
-    for(var i = 0; i < rowsAndCols.length; i++){
-      var count = 0;
-      for (var s = 0; s < rowsAndCols[i].length; s++){
-        if(rowsAndCols[i][s].innerHTML === currentPlayerType){
-          count++;
+  var checkForWin = function(playToken){
+    var boardColData = [[boardRowData[0][0], boardRowData[1][0], boardRowData[2][0]],[boardRowData[0][1], boardRowData[1][1], boardRowData[2][1]],[boardRowData[0][2], boardRowData[1][2], boardRowData[2][2]]];
+    var checkForRowColStreak = function(data){
+      for(var i = 0; i < data.length; i++){
+        var count = 0;
+        for (var s = 0; s < data[i].length; s++){
+          if(data[i][s] === currentPlayToken){
+            count++;
+          }
+        }
+        if(count > 2){
+          document.getElementsByClassName('result-msg')[0].innerHTML = 'Player ' + currentPlayToken + ' Wins!';
+          return;
         }
       }
-      if(count > 2){
-        document.getElementsByClassName('result-msg')[0].innerHTML = 'Player ' + currentPlayerType + ' Wins!';
+    }
+    checkForRowColStreak(boardRowData); // Check rows
+    checkForRowColStreak(boardColData); // Check cols
+    if(boardRowData[1][1] === currentPlayToken){ // Check diagonals
+      if ((boardRowData[0][0] === currentPlayToken && boardRowData[2][2] === currentPlayToken) ||
+      (boardRowData[0][2] === currentPlayToken && boardRowData[2][0] === currentPlayToken)) {
+        document.getElementsByClassName('result-msg')[0].innerHTML = 'Player ' + currentPlayToken + ' Wins!';
         return;
       }
     }
+
+    // If all squares filled without a win, tie!
+    if(squaresPlayed === 9){
+      document.getElementsByClassName('result-msg')[0].innerHTML = 'Tie!';
+      return;
+    }
+
   };
 
   var handleClick = function(event){
-    // if(event.target.innerHTML !== ""){
-    //   return;
-    // }
-    var isPlayerO = (squaresPlayed % 2 === 0);
+    if(event.target.innerHTML !== "&nbsp;"){
+      return;
+    }
+
+    // Update view and model
     ++squaresPlayed;
-    if(isPlayerO){
-      // event.target.value = '0';
-      event.target.innerHTML = 'O';
-    } else {
-      // event.target.value = '1';
-      event.target.innerHTML = 'X';
-    }
-    //event.target.removeEventListener('click', this.handleClick, true);
+    event.target.innerHTML = currentPlayToken;
+    boardRowData[parseInt(event.target.dataset.row)][parseInt(event.target.dataset.col)] = currentPlayToken;
+
     if(squaresPlayed > 4){
-      if(squaresPlayed === 9){
-        document.getElementsByClassName('result-msg').innerHTML('Tie!');
-        return;
-      }
-      checkForWin(isPlayerO);
+      checkForWin(currentPlayToken);
     }
+    currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X';
   }
 
+  ///////////////////////////////////////
   // Render
+
   var boardSqs = document.getElementsByClassName('board__sq');
   for(var i = 0; i < boardSqs.length; i++){
     boardSqs[i].addEventListener('click', handleClick);
