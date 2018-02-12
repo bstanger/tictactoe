@@ -3,6 +3,7 @@
   var squaresPlayed = 0;
   var currentPlayToken = 'X';
   var boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
+  var boardSqs = document.getElementsByClassName('board__sq');
 
   var checkForWin = function(playToken){
     var boardColData = [[boardRowData[0][0], boardRowData[1][0], boardRowData[2][0]],[boardRowData[0][1], boardRowData[1][1], boardRowData[2][1]],[boardRowData[0][2], boardRowData[1][2], boardRowData[2][2]]];
@@ -38,7 +39,7 @@
 
   };
 
-  var handleClick = function(event){
+  var handleSquareClick = function(event){
     if(event.target.innerHTML !== "&nbsp;"){
       return;
     }
@@ -52,13 +53,22 @@
       checkForWin(currentPlayToken);
     }
     currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X';
-  }
+  };
+
+  var handleResetClick = function(){
+    boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
+    for(var i = 0; i < boardSqs.length; i++){
+      boardSqs[i].innerHTML = "&nbsp;";
+    }
+    document.getElementsByClassName('result-msg')[0].innerHTML = '';
+  };
 
   ///////////////////////////////////////
   // Render
 
-  var boardSqs = document.getElementsByClassName('board__sq');
+  // var boardSqs = document.getElementsByClassName('board__sq');
   for(var i = 0; i < boardSqs.length; i++){
-    boardSqs[i].addEventListener('click', handleClick);
+    boardSqs[i].addEventListener('click', handleSquareClick);
   }
+  document.getElementsByClassName('reset-btn')[0].addEventListener('click', handleResetClick);
 })();
