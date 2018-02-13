@@ -1,5 +1,5 @@
 (function(){
-  
+
   ////////////////////////////////////////////////////////////////////
   ////////// MODEL ///////
   ////////////////////////////////////////////////////////////////////
@@ -36,6 +36,11 @@
     checkForTie();
     return;
   };
+
+  // var rotateBoardData = function(board){
+  //
+  //
+  // };
 
   var checkForRowColStreak = function(data){
     for(var i = 0; i < data.length; i++){
@@ -105,6 +110,7 @@
   var boardSqs = document.getElementsByClassName('board__sq');
   var resultMsgEl = document.getElementsByClassName('result-msg')[0];
   var boardEl = document.getElementsByClassName('board')[0];
+  var rotationDeg = 0;
 
   // Click Events ////////////////////////////////////////////
 
@@ -113,12 +119,31 @@
     if(clickedSq.disabled === true) return;
 
     // Change presentation
-    clickedSq.innerHTML = gameState.currentPlayToken;
+    clickedSq.appendChild(document.createElement('span'));
+    clickedSq.querySelector('span').innerHTML = gameState.currentPlayToken;
     clickedSq.disabled = true;
 
     var clickedRow = parseInt(clickedSq.dataset.row);
     var clickedCol = parseInt(clickedSq.dataset.col);
     updateModelOnSquareClick(clickedRow, clickedCol);
+
+    rotateSquare();
+    triggerGravity();
+  };
+
+  var rotateSquare = function(){
+    rotationDeg += 90;
+    boardEl.style.transform = 'rotate(' + rotationDeg + 'deg)';
+    var boardSpans = document.querySelectorAll('.board__sq span');
+    if(rotationDeg === 90 || rotationDeg % 270 === 0){
+      for(var i = 0; i < boardSpans.length; i++){
+        boardSpans[i].classList.add('is-rotated');
+      }
+    } else {
+      for(var i = 0; i < boardSpans.length; i++){
+        boardSpans[i].classList.remove('is-rotated');
+      }
+    }
   };
 
   var editName = function(event){
