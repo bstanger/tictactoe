@@ -89,7 +89,7 @@ button:focus {
   top: calc(50% - 95px);
   width: 100%;
   box-sizing: border-box;
-  border: 2px solid #ea690b;
+  border: 3px solid #ea690b;
   padding: 20px;
   background-color: #fff;
   color: #13316f;
@@ -149,7 +149,8 @@ button:focus {
 .score-card__name::after {
   content: "\f044";
   font-family: FontAwesome;
-  margin-left: 10px;
+  margin-left: 20px;
+  font-size: 65%;
 }
 
 .score-card__name-input {
@@ -169,6 +170,10 @@ button:focus {
   background-color: #d91062;
 }
 
+.score-card-1 .score-card__score {
+  color: #d91062;
+}
+
 /*//////*/
 
 .score-card-2 {
@@ -177,6 +182,10 @@ button:focus {
 
 .score-card-2 header {
   background-color: #ea690b;
+}
+
+.score-card-2 .score-card__score {
+  color: #ea690b;
 }
 
 /*///////////////////////////////////////////////////////////////////*/

@@ -1,46 +1,51 @@
 (function(){
 
-  var squaresPlayed = 0;
-  var currentPlayToken = 'X';
-  var boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
+  var gameState = {}
+  gameState.squaresPlayed = 0;
+  gameState.currentPlayToken = 'X';
+  gameState.boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
+  gameState.xPlayer = {};
+  gameState.xPlayer.name = 'Player One';
+  gameState.xPlayer.wins = 0;
+  gameState.oPlayer = {};
+  gameState.oPlayer.name = 'Player One';
+  gameState.oPlayer.wins = 0;
+
   var boardSqs = document.getElementsByClassName('board__sq');
-  var xPlayerWins = 0;
-  var oPlayerWins = 0;
-  var xPlayerName = 'Player One';
-  var oPlayerName = 'Player Two';
+
 
   // Click Square ////////////////////////////////////////////
 
   var checkForWin = function(playToken){
-    var boardColData = [[boardRowData[0][0], boardRowData[1][0], boardRowData[2][0]],[boardRowData[0][1], boardRowData[1][1], boardRowData[2][1]],[boardRowData[0][2], boardRowData[1][2], boardRowData[2][2]]];
+    var boardColData = [[gameState.boardRowData[0][0], gameState.boardRowData[1][0], gameState.boardRowData[2][0]],[gameState.boardRowData[0][1], gameState.boardRowData[1][1], gameState.boardRowData[2][1]],[gameState.boardRowData[0][2], gameState.boardRowData[1][2], gameState.boardRowData[2][2]]];
     var checkForRowColStreak = function(data){
       for(var i = 0; i < data.length; i++){
         var count = 0;
         for (var s = 0; s < data[i].length; s++){
-          if(data[i][s] === currentPlayToken){
+          if(data[i][s] === gameState.currentPlayToken){
             count++;
           }
         }
         if(count > 2){
-          showResultMessage('Player ' + currentPlayToken + ' Wins!');
-          logWinForPlayer(currentPlayToken);
+          showResultMessage('Player ' + gameState.currentPlayToken + ' Wins!');
+          logWinForPlayer(gameState.currentPlayToken);
           return;
         }
       }
     }
-    checkForRowColStreak(boardRowData); // Check rows
+    checkForRowColStreak(gameState.boardRowData); // Check rows
     checkForRowColStreak(boardColData); // Check cols
-    if(boardRowData[1][1] === currentPlayToken){ // Check diagonals
-      if ((boardRowData[0][0] === currentPlayToken && boardRowData[2][2] === currentPlayToken) ||
-      (boardRowData[0][2] === currentPlayToken && boardRowData[2][0] === currentPlayToken)) {
-        showResultMessage('Player ' + currentPlayToken + ' Wins!');
-        logWinForPlayer(currentPlayToken);
+    if(gameState.boardRowData[1][1] === gameState.currentPlayToken){ // Check diagonals
+      if ((gameState.boardRowData[0][0] === gameState.currentPlayToken && gameState.boardRowData[2][2] === gameState.currentPlayToken) ||
+      (gameState.boardRowData[0][2] === gameState.currentPlayToken && gameState.boardRowData[2][0] === gameState.currentPlayToken)) {
+        showResultMessage('Player ' + gameState.currentPlayToken + ' Wins!');
+        logWinForPlayer(gameState.currentPlayToken);
         return;
       }
     }
 
     // If all squares filled without a win, tie!
-    if(squaresPlayed === 9){
+    if(gameState.squaresPlayed === 9){
       showResultMessage('Tie!');
       return;
     }
@@ -51,21 +56,21 @@
     if(event.target.disabled === true) return;
 
     // Update view and model
-    ++squaresPlayed;
-    event.target.innerHTML = currentPlayToken;
+    ++gameState.squaresPlayed;
+    event.target.innerHTML = gameState.currentPlayToken;
     event.target.disabled = true;
-    boardRowData[parseInt(event.target.dataset.row)][parseInt(event.target.dataset.col)] = currentPlayToken;
+    gameState.boardRowData[parseInt(event.target.dataset.row)][parseInt(event.target.dataset.col)] = gameState.currentPlayToken;
 
-    if(squaresPlayed > 4){
-      checkForWin(currentPlayToken);
+    if(gameState.squaresPlayed > 4){
+      checkForWin(gameState.currentPlayToken);
     }
-    currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X';
-    document.getElementsByClassName('js-current-player')[0].innerHTML = currentPlayToken;
+    gameState.currentPlayToken = (gameState.currentPlayToken === 'X') ? 'O' : 'X';
+    document.getElementsByClassName('js-current-player')[0].innerHTML = gameState.currentPlayToken;
   };
 
   var handleResetClick = function(){
-    boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
-    squaresPlayed = 0;
+    gameState.boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
+    gameState.squaresPlayed = 0;
     for(var i = 0; i < boardSqs.length; i++){
       boardSqs[i].innerHTML = "";
       boardSqs[i].disabled = false;
@@ -88,9 +93,9 @@
       var inputElement = headerElement[0].getElementsByClassName('score-card__name-input')[0];
       if(inputElement.value !== ""){
         if(inputElement.dataset.player === "X"){
-          xPlayerName = inputElement.value;
+          gameState.xPlayer.name = inputElement.value;
         } else if (inputElement.dataset.player === "O"){
-          oPlayerName = inputElement.value;
+          gameState.oPlayer.name = inputElement.value;
         }
         headerElement[0].getElementsByClassName('score-card__name')[0].innerHTML = inputElement.value;
         headerElement[0].classList.remove('is-editing-name');
@@ -101,11 +106,13 @@
   // End of Game ////////////////////////////////////////////
 
   var logWinForPlayer = function(winner){
-    currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X'; // Reset play token so winner starts next game
+    gameState.currentPlayToken = (gameState.currentPlayToken === 'X') ? 'O' : 'X'; // Reset play token so winner starts next game
     if(winner === 'X'){
-      xPlayerWins++;
+      gameState.xPlayer.wins++;
+      document.querySelector('.score-card__score[data-player="X"]').innerHTML = gameState.xPlayer.wins;
     } else if (winner === 'O'){
-      oPlayerWins++;
+      gameState.oPlayer.wins++;
+      document.querySelector('.score-card__score[data-player="O"]').innerHTML = gameState.oPlayer.wins;
     }
   };
 
@@ -123,7 +130,7 @@
 
   // Render ////////////////////////////////////////////
 
-  document.getElementsByClassName('js-current-player')[0].innerHTML = currentPlayToken;
+  document.getElementsByClassName('js-current-player')[0].innerHTML = gameState.currentPlayToken;
   for(var i = 0; i < boardSqs.length; i++){
     boardSqs[i].addEventListener('click', handleSquareClick);
   }
