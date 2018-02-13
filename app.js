@@ -17,6 +17,8 @@
         }
         if(count > 2){
           document.getElementsByClassName('result-msg')[0].innerHTML = 'Player ' + currentPlayToken + ' Wins!';
+          document.getElementsByClassName('result-msg')[0].classList.add('is-shown');
+          document.getElementsByClassName('board')[0].classList.add('with-game-over');
           return;
         }
       }
@@ -27,6 +29,8 @@
       if ((boardRowData[0][0] === currentPlayToken && boardRowData[2][2] === currentPlayToken) ||
       (boardRowData[0][2] === currentPlayToken && boardRowData[2][0] === currentPlayToken)) {
         document.getElementsByClassName('result-msg')[0].innerHTML = 'Player ' + currentPlayToken + ' Wins!';
+        document.getElementsByClassName('result-msg')[0].classList.add('is-shown');
+        document.getElementsByClassName('board')[0].classList.add('with-game-over');
         return;
       }
     }
@@ -34,6 +38,8 @@
     // If all squares filled without a win, tie!
     if(squaresPlayed === 9){
       document.getElementsByClassName('result-msg')[0].innerHTML = 'Tie!';
+      document.getElementsByClassName('result-msg')[0].classList.add('is-shown');
+      document.getElementsByClassName('board')[0].classList.add('with-game-over');
       return;
     }
 
@@ -61,6 +67,8 @@
       boardSqs[i].innerHTML = "&nbsp;";
     }
     document.getElementsByClassName('result-msg')[0].innerHTML = '';
+    document.getElementsByClassName('result-msg')[0].classList.remove('is-shown');
+    document.getElementsByClassName('board')[0].classList.remove('with-game-over');
   };
 
   ///////////////////////////////////////
