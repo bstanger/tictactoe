@@ -16,9 +16,7 @@
           }
         }
         if(count > 2){
-          document.getElementsByClassName('result-msg')[0].innerHTML = 'Player ' + currentPlayToken + ' Wins!';
-          document.getElementsByClassName('result-msg')[0].classList.add('is-shown');
-          document.getElementsByClassName('board')[0].classList.add('with-game-over');
+          showResultMessage('Player ' + currentPlayToken + ' Wins!');
           return;
         }
       }
@@ -28,53 +26,64 @@
     if(boardRowData[1][1] === currentPlayToken){ // Check diagonals
       if ((boardRowData[0][0] === currentPlayToken && boardRowData[2][2] === currentPlayToken) ||
       (boardRowData[0][2] === currentPlayToken && boardRowData[2][0] === currentPlayToken)) {
-        document.getElementsByClassName('result-msg')[0].innerHTML = 'Player ' + currentPlayToken + ' Wins!';
-        document.getElementsByClassName('result-msg')[0].classList.add('is-shown');
-        document.getElementsByClassName('board')[0].classList.add('with-game-over');
+        showResultMessage('Player ' + currentPlayToken + ' Wins!');
         return;
       }
     }
 
     // If all squares filled without a win, tie!
     if(squaresPlayed === 9){
-      document.getElementsByClassName('result-msg')[0].innerHTML = 'Tie!';
-      document.getElementsByClassName('result-msg')[0].classList.add('is-shown');
-      document.getElementsByClassName('board')[0].classList.add('with-game-over');
+      showResultMessage('Tie!');
       return;
     }
 
   };
 
   var handleSquareClick = function(event){
-    if(event.target.innerHTML !== "&nbsp;"){
-      return;
-    }
+    if(event.target.disabled === true) return;
 
     // Update view and model
     ++squaresPlayed;
     event.target.innerHTML = currentPlayToken;
+    event.target.disabled = true;
     boardRowData[parseInt(event.target.dataset.row)][parseInt(event.target.dataset.col)] = currentPlayToken;
 
     if(squaresPlayed > 4){
       checkForWin(currentPlayToken);
     }
     currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X';
+    document.getElementsByClassName('js-current-player')[0].innerHTML = currentPlayToken;
   };
 
   var handleResetClick = function(){
     boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
     for(var i = 0; i < boardSqs.length; i++){
-      boardSqs[i].innerHTML = "&nbsp;";
+      boardSqs[i].innerHTML = "";
+      boardSqs[i].disabled = false;
     }
-    document.getElementsByClassName('result-msg')[0].innerHTML = '';
-    document.getElementsByClassName('result-msg')[0].classList.remove('is-shown');
-    document.getElementsByClassName('board')[0].classList.remove('with-game-over');
+    showResultMessage();
+  };
+
+  // var logWinForPlayer = function(winner){
+  //   currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X'; // Reset play token so winner starts next game
+  // },
+
+  var showResultMessage = function(displayText){
+    if(displayText){
+      document.getElementsByClassName('result-msg')[0].innerHTML = displayText;
+      document.getElementsByClassName('result-msg')[0].classList.add('is-shown');
+      document.getElementsByClassName('board')[0].classList.add('with-game-over');
+    } else {
+      document.getElementsByClassName('result-msg')[0].innerHTML = '';
+      document.getElementsByClassName('result-msg')[0].classList.remove('is-shown');
+      document.getElementsByClassName('board')[0].classList.remove('with-game-over');
+    }
   };
 
   ///////////////////////////////////////
   // Render
 
-  // var boardSqs = document.getElementsByClassName('board__sq');
+  document.getElementsByClassName('js-current-player')[0].innerHTML = currentPlayToken;
   for(var i = 0; i < boardSqs.length; i++){
     boardSqs[i].addEventListener('click', handleSquareClick);
   }

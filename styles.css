@@ -67,9 +67,14 @@ header span:nth-of-type(3){
   cursor: pointer;
 }
 
-.board__sq:hover {
+.board__sq:not([disabled]):hover {
   border: 2px solid #13316f;
 }
+
+/* .board__sq:not([disabled]):hover::after {
+  content: 'X';
+  opacity: 0.2;
+} */
 
 .result-msg {
   position: absolute;
@@ -82,11 +87,12 @@ header span:nth-of-type(3){
   color: #13316f;
   font-size: 42px;
   opacity: 0;
-  transition: opacity 500ms ease-in;
+  transition-duration: 0ms;
 }
 
 .result-msg.is-shown {
   opacity: 1;
+  transition: opacity 500ms ease-in;
 }
 
 /*///////////////////////////////////////////////////////////////////*/
