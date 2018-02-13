@@ -11,13 +11,13 @@ button:focus {
   outline: 0;
 }
 
-header {
+.main-header {
   height: 50px;
   margin-bottom: 40px;
   background-color: #13316f;
 }
 
-header h1 {
+.main-header h1 {
   display: inline-block;
   position: relative;
   top: -10px;
@@ -26,22 +26,30 @@ header h1 {
   padding: 20px 30px;
 }
 
-header span:nth-of-type(1){
+.main-header span:nth-of-type(1){
   color: #d91062;
 }
-header span:nth-of-type(2){
+.main-header span:nth-of-type(2){
   color: #bf0910;
 }
-header span:nth-of-type(3){
+.main-header span:nth-of-type(3){
   color: #ea690b;
 }
 
 /*///////////////////////////////////////////////////////////////////*/
 
+.main-body {
+  display: flex;
+  padding: 40px 20px;
+}
+
+/*///////////////////////////////////////////////////////////////////*/
+
 .board {
+  flex: 0 1 auto;
   position: relative;
   min-width: 350px;
-  margin: 40px auto;
+  margin: 0 30px;
   display: inline-grid;
   grid-template-rows: repeat(3, 10vw);
   grid-template-columns: repeat(3, 15vw);
@@ -93,6 +101,82 @@ header span:nth-of-type(3){
 .result-msg.is-shown {
   opacity: 1;
   transition: opacity 500ms ease-in;
+}
+
+/*///////////////////////////////////////////////////////////////////*/
+
+.score-card {
+  flex: 1 1 20%;
+  height: 30vw;
+}
+
+/* .score-card header {
+  /* height: 40px;
+} */
+
+.score-card header.is-editing-name .score-card__name { display: none;}
+.score-card header.is-editing-name .score-card__name-input { display: inline-block;}
+
+.score-card__name {
+  color: #fff;
+  cursor: pointer;
+}
+
+.score-card__name:hover {
+  color: #13316f;
+}
+
+.score-card__name,
+.score-card__name-input,
+.score-card__xo-type {
+  margin: 0;
+  padding: 14px 0;
+}
+
+.score-card__name-input {
+  height: 40px;
+  margin: 14px auto;
+  padding: 0 12px;
+  font-size: 24px;
+  line-height: 40px;
+  width: 80%;
+}
+
+.score-card__xo-type {
+  padding-top: 0;
+}
+
+.score-card__name::after {
+  content: "\f044";
+  font-family: FontAwesome;
+  margin-left: 10px;
+}
+
+.score-card__name-input {
+  display: none;
+}
+
+.score-card__score {
+  font-size: 70px;
+}
+
+/*//////*/
+
+.score-card-1 {
+  border: 2px solid #d91062;
+}
+.score-card-1 header {
+  background-color: #d91062;
+}
+
+/*//////*/
+
+.score-card-2 {
+  border: 2px solid #ea690b;
+}
+
+.score-card-2 header {
+  background-color: #ea690b;
 }
 
 /*///////////////////////////////////////////////////////////////////*/

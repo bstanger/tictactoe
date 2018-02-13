@@ -5,12 +5,13 @@
   <meta charset="utf-8">
   <title>Tic Tac Toe</title>
   <link href="https://fonts.googleapis.com/css?family=BioRhyme+Expanded" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="./styles.css"></link>
 </head>
 
 <body>
 
-  <header>
+  <header class="main-header">
     <h1>
       <span>Tic</span>
       <span>Tac</span>
@@ -18,17 +19,41 @@
     </h1>
   </header>
 
-  <section class="board">
-    <button class="board__sq" data-row="0" data-col="0"></button>
-    <button class="board__sq" data-row="0" data-col="1"></button>
-    <button class="board__sq" data-row="0" data-col="2"></button>
-    <button class="board__sq" data-row="1" data-col="0"></button>
-    <button class="board__sq" data-row="1" data-col="1"></button>
-    <button class="board__sq" data-row="1" data-col="2"></button>
-    <button class="board__sq" data-row="2" data-col="0"></button>
-    <button class="board__sq" data-row="2" data-col="1"></button>
-    <button class="board__sq" data-row="2" data-col="2"></button>
-    <h3 class="result-msg"></h3>
+  <section class="main-body">
+
+    <section class="score-card score-card-1">
+      <header>
+        <h2 class="score-card__name">Player One</h2>
+        <input class="score-card__name-input" data-player="X"/>
+        <h4 class="score-card__xo-type">Playing with <span class="score-card__token">X</span></h4>
+      </header>
+      <h5 class="score-card__score-label">Wins:</h5>
+      <h2 class="score-card__score">0</h2>
+    </section>
+
+    <section class="board">
+      <button class="board__sq" data-row="0" data-col="0"></button>
+      <button class="board__sq" data-row="0" data-col="1"></button>
+      <button class="board__sq" data-row="0" data-col="2"></button>
+      <button class="board__sq" data-row="1" data-col="0"></button>
+      <button class="board__sq" data-row="1" data-col="1"></button>
+      <button class="board__sq" data-row="1" data-col="2"></button>
+      <button class="board__sq" data-row="2" data-col="0"></button>
+      <button class="board__sq" data-row="2" data-col="1"></button>
+      <button class="board__sq" data-row="2" data-col="2"></button>
+      <h3 class="result-msg"></h3>
+    </section>
+
+    <section class="score-card score-card-2">
+      <header>
+        <h2 class="score-card__name">Player Two</h2>
+        <input class="score-card__name-input" data-player="0"/>
+        <h4 class="score-card__xo-type">Playing with <span class="score-card__token">O</span></h4>
+      </header>
+      <h5 class="score-card__score-label">Wins:</h5>
+      <h2 class="score-card__score">0</h2>
+    </section>
+
   </section>
 
   <section>

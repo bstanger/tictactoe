@@ -4,6 +4,12 @@
   var currentPlayToken = 'X';
   var boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
   var boardSqs = document.getElementsByClassName('board__sq');
+  var xPlayerWins = 0;
+  var oPlayerWins = 0;
+  var xPlayerName = 'Player One';
+  var oPlayerName = 'Player Two';
+
+  // Click Square ////////////////////////////////////////////
 
   var checkForWin = function(playToken){
     var boardColData = [[boardRowData[0][0], boardRowData[1][0], boardRowData[2][0]],[boardRowData[0][1], boardRowData[1][1], boardRowData[2][1]],[boardRowData[0][2], boardRowData[1][2], boardRowData[2][2]]];
@@ -17,6 +23,7 @@
         }
         if(count > 2){
           showResultMessage('Player ' + currentPlayToken + ' Wins!');
+          logWinForPlayer(currentPlayToken);
           return;
         }
       }
@@ -27,6 +34,7 @@
       if ((boardRowData[0][0] === currentPlayToken && boardRowData[2][2] === currentPlayToken) ||
       (boardRowData[0][2] === currentPlayToken && boardRowData[2][0] === currentPlayToken)) {
         showResultMessage('Player ' + currentPlayToken + ' Wins!');
+        logWinForPlayer(currentPlayToken);
         return;
       }
     }
@@ -57,6 +65,7 @@
 
   var handleResetClick = function(){
     boardRowData = [[null, null, null],[null, null, null],[null, null, null]];
+    squaresPlayed = 0;
     for(var i = 0; i < boardSqs.length; i++){
       boardSqs[i].innerHTML = "";
       boardSqs[i].disabled = false;
@@ -64,9 +73,41 @@
     showResultMessage();
   };
 
-  // var logWinForPlayer = function(winner){
-  //   currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X'; // Reset play token so winner starts next game
-  // },
+  // Name Editing ////////////////////////////////////////////
+
+  var editName = function(event){
+    document.querySelectorAll('.score-card header')[0].classList.remove('is-editing-name');
+    document.querySelectorAll('.score-card header')[1].classList.remove('is-editing-name');
+    event.target.parentElement.classList.add('is-editing-name');
+    event.target.parentElement.children[1].focus();
+  };
+
+  var enterNameEdit = function(event){
+    var headerElement = document.querySelectorAll('.score-card header.is-editing-name');
+    if(event.keyCode === 13 && headerElement.length === 1){
+      var inputElement = headerElement[0].getElementsByClassName('score-card__name-input')[0];
+      if(inputElement.value !== ""){
+        if(inputElement.dataset.player === "X"){
+          xPlayerName = inputElement.value;
+        } else if (inputElement.dataset.player === "O"){
+          oPlayerName = inputElement.value;
+        }
+        headerElement[0].getElementsByClassName('score-card__name')[0].innerHTML = inputElement.value;
+        headerElement[0].classList.remove('is-editing-name');
+      }
+    }
+  }
+
+  // End of Game ////////////////////////////////////////////
+
+  var logWinForPlayer = function(winner){
+    currentPlayToken = (currentPlayToken === 'X') ? 'O' : 'X'; // Reset play token so winner starts next game
+    if(winner === 'X'){
+      xPlayerWins++;
+    } else if (winner === 'O'){
+      oPlayerWins++;
+    }
+  };
 
   var showResultMessage = function(displayText){
     if(displayText){
@@ -80,12 +121,14 @@
     }
   };
 
-  ///////////////////////////////////////
-  // Render
+  // Render ////////////////////////////////////////////
 
   document.getElementsByClassName('js-current-player')[0].innerHTML = currentPlayToken;
   for(var i = 0; i < boardSqs.length; i++){
     boardSqs[i].addEventListener('click', handleSquareClick);
   }
   document.getElementsByClassName('reset-btn')[0].addEventListener('click', handleResetClick);
+  document.getElementsByClassName('score-card__name')[0].addEventListener('click', editName);
+  document.getElementsByClassName('score-card__name')[1].addEventListener('click', editName);
+  document.addEventListener('keyup', enterNameEdit);
 })();
