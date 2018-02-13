@@ -1,4 +1,7 @@
 (function(){
+  ////////////////////////////////////////////////////////////////////
+  ////////// MODEL ///////
+  ////////////////////////////////////////////////////////////////////
 
   var gameState = {}
   gameState.squaresPlayed = 0;
@@ -11,61 +14,79 @@
   gameState.oPlayer.name = 'Player One';
   gameState.oPlayer.wins = 0;
 
-  var boardSqs = document.getElementsByClassName('board__sq');
-
 
   // Click Square ////////////////////////////////////////////
 
-  var checkForWin = function(playToken){
-    var boardColData = [[gameState.boardRowData[0][0], gameState.boardRowData[1][0], gameState.boardRowData[2][0]],[gameState.boardRowData[0][1], gameState.boardRowData[1][1], gameState.boardRowData[2][1]],[gameState.boardRowData[0][2], gameState.boardRowData[1][2], gameState.boardRowData[2][2]]];
-    var checkForRowColStreak = function(data){
-      for(var i = 0; i < data.length; i++){
-        var count = 0;
-        for (var s = 0; s < data[i].length; s++){
-          if(data[i][s] === gameState.currentPlayToken){
-            count++;
-          }
-        }
-        if(count > 2){
-          showResultMessage('Player ' + gameState.currentPlayToken + ' Wins!');
-          logWinForPlayer(gameState.currentPlayToken);
-          return;
+  var checkForRowColStreak = function(data){
+    for(var i = 0; i < data.length; i++){
+      var count = 0;
+      for (var s = 0; s < data[i].length; s++){
+        if(data[i][s] === gameState.currentPlayToken){
+          count++;
         }
       }
-    }
-    checkForRowColStreak(gameState.boardRowData); // Check rows
-    checkForRowColStreak(boardColData); // Check cols
-    if(gameState.boardRowData[1][1] === gameState.currentPlayToken){ // Check diagonals
-      if ((gameState.boardRowData[0][0] === gameState.currentPlayToken && gameState.boardRowData[2][2] === gameState.currentPlayToken) ||
-      (gameState.boardRowData[0][2] === gameState.currentPlayToken && gameState.boardRowData[2][0] === gameState.currentPlayToken)) {
+      if(count > 2){
         showResultMessage('Player ' + gameState.currentPlayToken + ' Wins!');
         logWinForPlayer(gameState.currentPlayToken);
         return;
       }
     }
+  };
 
+  var checkForDiagonalStreak = function(){
+    if(gameState.boardRowData[1][1] !== gameState.currentPlayToken){
+        return;
+    }
+    if ((gameState.boardRowData[0][0] === gameState.currentPlayToken && gameState.boardRowData[2][2] === gameState.currentPlayToken) ||
+    (gameState.boardRowData[0][2] === gameState.currentPlayToken && gameState.boardRowData[2][0] === gameState.currentPlayToken)) {
+      showResultMessage('Player ' + gameState.currentPlayToken + ' Wins!');
+      logWinForPlayer(gameState.currentPlayToken);
+      return;
+    }
+  };
+
+  var checkForTie = function(){
     // If all squares filled without a win, tie!
     if(gameState.squaresPlayed === 9){
       showResultMessage('Tie!');
       return;
     }
+  };
 
+  var checkForWinOrTie = function(playToken){
+    var boardColData = [[gameState.boardRowData[0][0], gameState.boardRowData[1][0], gameState.boardRowData[2][0]],[gameState.boardRowData[0][1], gameState.boardRowData[1][1], gameState.boardRowData[2][1]],[gameState.boardRowData[0][2], gameState.boardRowData[1][2], gameState.boardRowData[2][2]]];
+    checkForRowColStreak(gameState.boardRowData);
+    checkForRowColStreak(boardColData);
+    checkForDiagonalStreak();
+    checkForTie();
+    return;
+  };
+
+  var updateModelOnSquareClick = function(clickedRow, clickedCol){
+    ++gameState.squaresPlayed;
+    gameState.boardRowData[clickedRow][clickedCol] = gameState.currentPlayToken;
+    if(gameState.squaresPlayed > 4){
+      checkForWinOrTie(gameState.currentPlayToken);
+    }
+    gameState.currentPlayToken = (gameState.currentPlayToken === 'X') ? 'O' : 'X';
+    updateCurrentPlayerDisplay(gameState.currentPlayToken);
+  };
+
+  var updateCurrentPlayerDisplay = function(newCurrentPlayer){
+    document.getElementsByClassName('js-current-player')[0].innerHTML = newCurrentPlayer;
   };
 
   var handleSquareClick = function(event){
-    if(event.target.disabled === true) return;
+    var clickedSq = event.target;
+    if(clickedSq.disabled === true) return;
 
-    // Update view and model
-    ++gameState.squaresPlayed;
-    event.target.innerHTML = gameState.currentPlayToken;
-    event.target.disabled = true;
-    gameState.boardRowData[parseInt(event.target.dataset.row)][parseInt(event.target.dataset.col)] = gameState.currentPlayToken;
+    // Change presentation
+    clickedSq.innerHTML = gameState.currentPlayToken;
+    clickedSq.disabled = true;
 
-    if(gameState.squaresPlayed > 4){
-      checkForWin(gameState.currentPlayToken);
-    }
-    gameState.currentPlayToken = (gameState.currentPlayToken === 'X') ? 'O' : 'X';
-    document.getElementsByClassName('js-current-player')[0].innerHTML = gameState.currentPlayToken;
+    var clickedRow = parseInt(clickedSq.dataset.row);
+    var clickedCol = parseInt(clickedSq.dataset.col);
+    updateModelOnSquareClick(clickedRow, clickedCol);
   };
 
   var handleResetClick = function(){
@@ -127,6 +148,12 @@
       document.getElementsByClassName('board')[0].classList.remove('with-game-over');
     }
   };
+
+  ////////////////////////////////////////////////////////////////////
+  ////////// CONTROLLER ///////
+  ////////////////////////////////////////////////////////////////////
+
+  var boardSqs = document.getElementsByClassName('board__sq');
 
   // Render ////////////////////////////////////////////
 
